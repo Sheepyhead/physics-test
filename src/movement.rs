@@ -7,7 +7,7 @@ pub struct Movement;
 
 impl Plugin for Movement {
     fn build(&self, app: &mut App) {
-        app.add_system(move_towards_destination)
+        app//.add_system(move_towards_destination)
             .add_system(snap_to_ground);
     }
 }

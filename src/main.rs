@@ -2,6 +2,7 @@
 #![allow(clippy::type_complexity)]
 #![allow(clippy::too_many_arguments)]
 
+use animation::Animation;
 use bevy::{
     math::Vec3Swizzles,
     prelude::{shape::Cube, *},
@@ -13,11 +14,14 @@ use bevy_tweening::TweeningPlugin;
 use controls::Controls;
 use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
+use preload_assets::PreloadAssets;
 use rendering::Rendering;
 
+mod animation;
 mod controls;
 mod movement;
 mod physics;
+mod preload_assets;
 mod rendering;
 
 pub const CLEAR: Color = Color::BLACK;
@@ -42,9 +46,11 @@ fn main() {
         })
         .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(TweeningPlugin)
+        .add_plugin(Animation)
         .add_plugin(Controls)
         .add_plugin(Movement)
         .add_plugin(Physics)
+        .add_plugin(PreloadAssets)
         .add_plugin(Rendering)
         .add_startup_system(spawn_camera)
         .add_startup_system(setup)
@@ -55,7 +61,7 @@ fn main() {
 fn spawn_camera(mut commands: Commands) {
     let mut camera = PerspectiveCameraBundle::new_3d();
 
-    camera.transform.translation = Vec3::splat(20.0);
+    camera.transform.translation = Vec3::splat(5.0);
     camera.transform.look_at(Vec3::splat(0.0), Vec3::Y);
 
     commands.spawn_bundle(camera);
@@ -75,7 +81,12 @@ fn slow_down() {
     std::thread::sleep(std::time::Duration::from_secs_f32(1.000));
 }
 
-fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+fn setup(mut commands: Commands, ass: Res<AssetServer>) {
+    commands.spawn_bundle(DirectionalLightBundle {
+        transform: Transform::from_xyz(10.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ..default()
+    });
+
     commands.spawn_bundle((
         Collider::cuboid(100.0, 1.0, 100.0),
         CollisionGroups {
@@ -89,18 +100,9 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
 
     let player_height = 1.0;
     commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(
-                Cube {
-                    size: player_height / 2.0,
-                }
-                .into(),
-            ),
-            transform: Transform::from_xyz(0.0, player_height / 2.0, 0.0),
-            global_transform: GlobalTransform::default(),
-            ..default()
-        })
-        .insert_bundle((
+        .spawn_bundle((
+            Transform::from_xyz(0.0, player_height / 2.0, 0.0),
+            GlobalTransform::default(),
             Collider::cuboid(1.0, player_height, 1.0),
             Player,
             Name::new("Player"),
@@ -113,6 +115,8 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                 Transform::from_translation(Vec2::ZERO.extend(player_height / 2.0).xzy()),
                 GlobalTransform::default(),
             ));
+
+            parent.spawn_scene(ass.load("ybot.glb#Scene0"));
         });
 }
 
