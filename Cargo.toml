@@ -28,5 +28,6 @@ serde = "1.0"
 ron = "0.7"
 rand = "0.8"
 bevy_rapier3d = { version = "0.13.2", features = ["debug-render"] }
+bevy_tweening = "0.4.0"
 
 # cargo run --release --features bevy/trace,bevy/trace_chrome

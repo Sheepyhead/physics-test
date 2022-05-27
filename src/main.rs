@@ -9,13 +9,16 @@ use bevy::{
 };
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use bevy_rapier3d::prelude::*;
+use bevy_tweening::TweeningPlugin;
 use controls::Controls;
 use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
+use rendering::Rendering;
 
 mod controls;
 mod movement;
 mod physics;
+mod rendering;
 
 pub const CLEAR: Color = Color::BLACK;
 pub const HEIGHT: f32 = 600.0;
@@ -38,9 +41,11 @@ fn main() {
             ..Default::default()
         })
         .add_plugin(WorldInspectorPlugin::new())
+        .add_plugin(TweeningPlugin)
         .add_plugin(Controls)
         .add_plugin(Movement)
         .add_plugin(Physics)
+        .add_plugin(Rendering)
         .add_startup_system(spawn_camera)
         .add_startup_system(setup)
         .add_system(toggle_inspector)

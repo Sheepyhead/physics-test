@@ -1,9 +1,13 @@
-use bevy::prelude::*;
+use std::{f32::consts::PI, time::Duration};
+
+use bevy::{math::Vec4Swizzles, prelude::*};
 use bevy_rapier3d::prelude::*;
+use bevy_tweening::{lens::TransformRotationLens, Animator, EaseFunction, Tween};
 
 use crate::{
     movement::{move_towards_destination, Destination},
     physics::{ray_from_screenspace, CollisionGroup},
+    rendering::Pyramid,
     Player,
 };
 
@@ -17,6 +21,8 @@ impl Plugin for Controls {
 
 fn click_ground(
     mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut mats: ResMut<Assets<StandardMaterial>>,
     input: Res<Input<MouseButton>>,
     windows: Res<Windows>,
     context: Res<RapierContext>,
@@ -40,13 +46,35 @@ fn click_ground(
                 InteractionGroups::all().with_filter(CollisionGroup::Terrain as u32),
                 None,
             ) {
+                let mut mat = StandardMaterial::from(Color::YELLOW);
+                mat.unlit = true;
+                let transform = Transform::from_translation(point.extend(1.0).xwz())
+                    .with_rotation(Quat::from_rotation_x(PI));
+                let angles = transform.rotation.to_euler(EulerRot::XYZ);
+                let end_rotation =
+                    Quat::from_euler(EulerRot::XYZ, angles.0, angles.1 + PI, angles.2);
                 let destination = commands
-                    .spawn_bundle((
-                        Collider::cuboid(0.2, 0.2, 0.2),
-                        CollisionGroups::new(0, 0),
-                        Transform::from_translation(point),
-                        GlobalTransform::default(),
-                    ))
+                    .spawn_bundle(PbrBundle {
+                        mesh: meshes.add(
+                            Pyramid {
+                                base_side_length: 0.5,
+                                height: 0.5,
+                            }
+                            .into(),
+                        ),
+                        material: mats.add(mat),
+                        transform,
+                        ..default()
+                    })
+                    .insert(Animator::new(Tween::new(
+                        EaseFunction::CircularInOut,
+                        bevy_tweening::TweeningType::PingPong,
+                        Duration::from_secs_f32(0.5),
+                        TransformRotationLens {
+                            start: transform.rotation,
+                            end: end_rotation,
+                        },
+                    )))
                     .id();
 
                 let (player, old_destination) = player.single();
