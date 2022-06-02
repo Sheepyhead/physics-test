@@ -30,10 +30,7 @@ fn click_ground(
     player: Query<(Entity, Option<&Destination>), With<Player>>,
 ) {
     if input.pressed(MouseButton::Left) {
-        if let Some(cursor_pos_screen) = windows
-            .get_primary()
-            .and_then(|window| window.cursor_position())
-        {
+        if let Some(cursor_pos_screen) = windows.get_primary().and_then(Window::cursor_position) {
             let (camera, camera_transform) = camera.single();
             let (from, to) =
                 ray_from_screenspace(cursor_pos_screen, &windows, camera, camera_transform, 100.0);

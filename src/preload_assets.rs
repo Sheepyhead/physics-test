@@ -1,4 +1,4 @@
-use bevy::{gltf::Gltf, prelude::*, utils::HashMap};
+use bevy::{gltf::Gltf, prelude::*};
 
 pub struct PreloadAssets;
 
@@ -42,7 +42,7 @@ fn inspect_gltf(mut inspected: Local<bool>, ass: Res<AssetServer>, gltfs: Res<As
         return;
     }
 
-    if let Some(gltf) = gltfs.get(ass.load_untyped("Character.gltf")) {
+    if let Some(_gltf) = gltfs.get(ass.load_untyped("Character.gltf")) {
         *inspected = true;
 
         // info!("{gltf:?}");

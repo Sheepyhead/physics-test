@@ -7,7 +7,7 @@ pub struct Movement;
 
 impl Plugin for Movement {
     fn build(&self, app: &mut App) {
-        app//.add_system(move_towards_destination)
+        app //.add_system(move_towards_destination)
             .add_system(snap_to_ground);
     }
 }
@@ -32,12 +32,12 @@ pub fn move_towards_destination(
             let full_movement = target - moving.translation.xz();
             let mut movement = full_movement.normalize_or_zero() * time.delta_seconds() * 20.0;
             movement = movement.clamp_length_max(full_movement.length());
-            if movement != Vec2::ZERO {
-                moving.translation += movement.extend(0.0).xzy();
-            } else {
+            if movement == Vec2::ZERO {
                 // Reached destination, remove everything
                 commands.entity(entity).remove::<Destination>();
                 commands.entity(**destination).despawn_recursive();
+            } else {
+                moving.translation += movement.extend(0.0).xzy();
             }
         } else {
             // Destination does not exist or does not work as a destination, remove everything
