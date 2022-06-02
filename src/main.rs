@@ -3,11 +3,7 @@
 #![allow(clippy::too_many_arguments)]
 
 use animation::Animation;
-use bevy::{
-    math::Vec3Swizzles,
-    prelude::{shape::Cube, *},
-    window::PresentMode,
-};
+use bevy::{math::Vec3Swizzles, prelude::*, window::PresentMode};
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
@@ -116,7 +112,7 @@ fn setup(mut commands: Commands, ass: Res<AssetServer>) {
                 GlobalTransform::default(),
             ));
 
-            parent.spawn_scene(ass.load("ybot.glb#Scene0"));
+            parent.spawn_scene(ass.load("Character.gltf#Scene0"));
         });
 }
 

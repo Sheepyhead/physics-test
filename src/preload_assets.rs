@@ -1,21 +1,40 @@
-use bevy::{gltf::Gltf, prelude::*};
+use bevy::{gltf::Gltf, prelude::*, utils::HashMap};
 
 pub struct PreloadAssets;
 
 impl Plugin for PreloadAssets {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(preload).add_system(inspect_gltf);
+        app.add_startup_system(preload)
+            .add_system(setup_animations)
+            .add_system(inspect_gltf);
     }
 }
 
 struct PreloadedAssets(Vec<HandleUntyped>);
 
+#[derive(Debug)]
+pub struct Animations {
+    pub player: Handle<Gltf>,
+}
+
 fn preload(mut commands: Commands, ass: Res<AssetServer>) {
     let mut handles = vec![];
-    for path in ["anim_idle.glb", "anim_run.glb", "ybot.glb"] {
+    for path in ["Character.gltf"] {
         handles.push(ass.load_untyped(path));
     }
     commands.insert_resource(PreloadedAssets(handles));
+}
+
+fn setup_animations(mut commands: Commands, gltfs: Res<Assets<Gltf>>) {
+    if !gltfs.is_changed() {
+        return;
+    }
+
+    for (handle, _) in gltfs.iter() {
+        commands.insert_resource(Animations {
+            player: gltfs.get_handle(handle),
+        });
+    }
 }
 
 fn inspect_gltf(mut inspected: Local<bool>, ass: Res<AssetServer>, gltfs: Res<Assets<Gltf>>) {
@@ -23,10 +42,9 @@ fn inspect_gltf(mut inspected: Local<bool>, ass: Res<AssetServer>, gltfs: Res<As
         return;
     }
 
-    if let Some(gltf) = gltfs.get(ass.load_untyped("anim_idle.glb")) {
+    if let Some(gltf) = gltfs.get(ass.load_untyped("Character.gltf")) {
         *inspected = true;
 
-        info!("{gltf:?}");
+        // info!("{gltf:?}");
     }
-    
 }
