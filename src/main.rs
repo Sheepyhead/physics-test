@@ -71,8 +71,8 @@ fn main() {
 fn spawn_camera(mut commands: Commands) {
     let mut camera = PerspectiveCameraBundle::new_3d();
 
-    camera.transform.translation = Vec3::splat(5.0);
-    camera.transform.look_at(Vec3::splat(0.0), Vec3::Y);
+    camera.transform.translation = Vec3::splat(15.0);
+    camera.transform.look_at(Vec3::ZERO, Vec3::Y);
 
     commands.spawn_bundle(camera);
 }
@@ -113,9 +113,10 @@ fn setup(mut commands: Commands, ass: Res<AssetServer>) {
         .spawn_bundle((
             Transform::from_xyz(0.0, player_height / 2.0, 0.0),
             GlobalTransform::default(),
-            Collider::cuboid(1.0, player_height, 1.0),
+            Collider::capsule_y(player_height / 2.0, 1.0),
             Player,
             Name::new("Player"),
+            CollisionGroups::new(0, u32::MAX),
         ))
         .with_children(|parent| {
             parent.spawn_bundle((
