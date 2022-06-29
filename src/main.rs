@@ -111,7 +111,7 @@ fn setup(
         for z in 0..10 {
             commands
                 .spawn_bundle((
-                    Collider::cuboid(5.0, 1.0, 5.0),
+                    Collider::cuboid(5.0, 0.01, 5.0),
                     CollisionGroups {
                         memberships: CollisionGroup::Terrain as u32,
                         ..default()
@@ -121,7 +121,7 @@ fn setup(
                 .insert_bundle(PbrBundle {
                     mesh: meshes.add(Plane { size: 10.0 }.into()),
                     material: materials.add(ass.load("grass.jpg").into()),
-                    transform: Transform::from_xyz(10.0 * x as f32, 1.0, 10.0 * z as f32),
+                    transform: Transform::from_xyz(10.0 * x as f32, 0.0, 10.0 * z as f32),
                     ..default()
                 });
         }
