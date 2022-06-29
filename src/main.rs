@@ -16,7 +16,11 @@
 )]
 
 use animation::Animation;
-use bevy::{math::Vec3Swizzles, prelude::*, window::PresentMode};
+use bevy::{
+    math::Vec3Swizzles,
+    prelude::{shape::Plane, *},
+    window::PresentMode,
+};
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
@@ -71,8 +75,10 @@ fn main() {
 fn spawn_camera(mut commands: Commands) {
     let mut camera = PerspectiveCameraBundle::new_3d();
 
-    camera.transform.translation = Vec3::splat(15.0);
-    camera.transform.look_at(Vec3::ZERO, Vec3::Y);
+    camera.transform.translation = Vec3::new(65.0, 15.0, 65.0);
+    camera
+        .transform
+        .look_at(Vec3::new(50.0, 0.0, 50.0), Vec3::Y);
 
     commands.spawn_bundle(camera);
 }
@@ -91,27 +97,39 @@ fn slow_down() {
     std::thread::sleep(std::time::Duration::from_secs_f32(1.000));
 }
 
-fn setup(mut commands: Commands, ass: Res<AssetServer>) {
+fn setup(
+    mut commands: Commands,
+    ass: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     commands.spawn_bundle(DirectionalLightBundle {
         transform: Transform::from_xyz(10.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
     });
-
-    commands.spawn_bundle((
-        Collider::cuboid(100.0, 1.0, 100.0),
-        CollisionGroups {
-            memberships: CollisionGroup::Terrain as u32,
-            ..default()
-        },
-        Transform::default(),
-        GlobalTransform::default(),
-        Name::new("Ground"),
-    ));
-
+    for x in 0..10 {
+        for z in 0..10 {
+            commands
+                .spawn_bundle((
+                    Collider::cuboid(5.0, 1.0, 5.0),
+                    CollisionGroups {
+                        memberships: CollisionGroup::Terrain as u32,
+                        ..default()
+                    },
+                    Name::new("Ground"),
+                ))
+                .insert_bundle(PbrBundle {
+                    mesh: meshes.add(Plane { size: 10.0 }.into()),
+                    material: materials.add(ass.load("grass.jpg").into()),
+                    transform: Transform::from_xyz(10.0 * x as f32, 1.0, 10.0 * z as f32),
+                    ..default()
+                });
+        }
+    }
     let player_height = 1.0;
     commands
         .spawn_bundle((
-            Transform::from_xyz(0.0, player_height / 2.0, 0.0),
+            Transform::from_xyz(50.0, player_height / 2.0, 50.0),
             GlobalTransform::default(),
             Collider::capsule_y(player_height / 2.0, 1.0),
             Player,

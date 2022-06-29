@@ -22,6 +22,7 @@ fn preload(mut commands: Commands, ass: Res<AssetServer>) {
     for path in ["Character.gltf"] {
         handles.push(ass.load_untyped(path));
     }
+    handles.push(ass.load_untyped("grass.jpg"));
     commands.insert_resource(PreloadedAssets(handles));
 }
 

@@ -15,6 +15,7 @@ bevy = { version = "0.7", features = [
     "bevy_winit",
     "render",
     "png",
+    "jpeg",
     "hdr",
     "vorbis",
     "x11",
