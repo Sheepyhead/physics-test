@@ -17,6 +17,7 @@
 
 use animation::Animation;
 use bevy::{
+    input::system::exit_on_esc_system,
     math::Vec3Swizzles,
     prelude::{shape::Plane, *},
     window::PresentMode,
@@ -24,6 +25,7 @@ use bevy::{
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
+use camera::Camera;
 use controls::Controls;
 use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
@@ -31,6 +33,7 @@ use preload_assets::PreloadAssets;
 use rendering::Rendering;
 
 mod animation;
+mod camera;
 mod controls;
 mod movement;
 mod physics;
@@ -41,46 +44,36 @@ pub mod util;
 pub const CLEAR: Color = Color::BLACK;
 pub const HEIGHT: f32 = 600.0;
 pub const RESOLUTION: f32 = 16.0 / 9.0;
+pub const PLAYER_SPAWN: [f32; 3] = [0.0, 0.5, 0.0];
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(CLEAR))
         .insert_resource(WindowDescriptor {
-            width: HEIGHT * RESOLUTION,
-            height: HEIGHT,
+            mode: bevy::window::WindowMode::BorderlessFullscreen,
             title: "Bevy Template".to_string(),
             present_mode: PresentMode::Fifo,
             resizable: false,
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
+        .add_system(exit_on_esc_system)
         .insert_resource(WorldInspectorParams {
             enabled: false,
             ..Default::default()
         })
         .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(TweeningPlugin)
+        .add_plugin(Camera)
         .add_plugin(Animation)
         .add_plugin(Controls)
         .add_plugin(Movement)
         .add_plugin(Physics)
         .add_plugin(PreloadAssets)
         .add_plugin(Rendering)
-        .add_startup_system(spawn_camera)
         .add_startup_system(setup)
         .add_system(toggle_inspector)
         .run();
-}
-
-fn spawn_camera(mut commands: Commands) {
-    let mut camera = PerspectiveCameraBundle::new_3d();
-
-    camera.transform.translation = Vec3::new(65.0, 15.0, 65.0);
-    camera
-        .transform
-        .look_at(Vec3::new(50.0, 0.0, 50.0), Vec3::Y);
-
-    commands.spawn_bundle(camera);
 }
 
 fn toggle_inspector(
@@ -107,8 +100,8 @@ fn setup(
         transform: Transform::from_xyz(10.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
     });
-    for x in 0..10 {
-        for z in 0..10 {
+    for x in -10..10 {
+        for z in -10..10 {
             commands
                 .spawn_bundle((
                     Collider::cuboid(5.0, 0.01, 5.0),
@@ -128,9 +121,11 @@ fn setup(
     }
     let player_height = 1.0;
     commands
-        .spawn_bundle((
-            Transform::from_xyz(50.0, player_height / 2.0, 50.0),
-            GlobalTransform::default(),
+        .spawn_bundle(TransformBundle {
+            local: Transform::from_translation(PLAYER_SPAWN.into()),
+            ..default()
+        })
+        .insert_bundle((
             Collider::capsule_y(player_height / 2.0, 1.0),
             Player,
             Name::new("Player"),
