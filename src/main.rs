@@ -35,6 +35,7 @@ use rendering::Rendering;
 mod animation;
 mod camera;
 mod controls;
+mod debug;
 mod movement;
 mod physics;
 mod preload_assets;
@@ -47,8 +48,9 @@ pub const RESOLUTION: f32 = 16.0 / 9.0;
 pub const PLAYER_SPAWN: [f32; 3] = [0.0, 0.5, 0.0];
 
 fn main() {
-    App::new()
-        .insert_resource(ClearColor(CLEAR))
+    let mut app = App::new();
+
+    app.insert_resource(ClearColor(CLEAR))
         .insert_resource(WindowDescriptor {
             mode: bevy::window::WindowMode::BorderlessFullscreen,
             title: "Bevy Template".to_string(),
@@ -72,8 +74,12 @@ fn main() {
         .add_plugin(PreloadAssets)
         .add_plugin(Rendering)
         .add_startup_system(setup)
-        .add_system(toggle_inspector)
-        .run();
+        .add_system(toggle_inspector);
+
+    #[cfg(debug_assertions)]
+    app.add_plugin(debug::Debug);
+
+    app.run();
 }
 
 fn toggle_inspector(
