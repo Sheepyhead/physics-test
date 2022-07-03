@@ -19,9 +19,10 @@ pub struct Animations {
 
 fn preload(mut commands: Commands, ass: Res<AssetServer>) {
     let mut handles = vec![];
-    for path in ["Character.gltf"] {
-        handles.push(ass.load_untyped(path));
-    }
+
+    let path = "Character.gltf";
+    handles.push(ass.load_untyped(path));
+
     handles.push(ass.load_untyped("grass.jpg"));
     commands.insert_resource(PreloadedAssets(handles));
 }
