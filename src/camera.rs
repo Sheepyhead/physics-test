@@ -26,7 +26,7 @@ fn spawn_camera(mut commands: Commands, offset: Res<CameraOffset>) {
 
 fn follow_player(
     offset: Res<CameraOffset>,
-    player: Query<&GlobalTransform, (With<Player>, Changed<GlobalTransform>)>,
+    player: Query<&Transform, (With<Player>, Changed<Transform>)>,
     mut camera: Query<&mut Transform, (With<Camera3d>, Without<Player>)>,
 ) {
     if let Ok(player_pos) = player.get_single() {

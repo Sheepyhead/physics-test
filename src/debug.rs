@@ -1,6 +1,6 @@
 use bevy::{
     input::{keyboard::KeyboardInput, ElementState},
-    prelude::{shape::Cube, *},
+    prelude::*,
 };
 use bevy_rapier3d::prelude::*;
 
