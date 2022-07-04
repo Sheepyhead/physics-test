@@ -20,6 +20,7 @@ fn spawn_camera(mut commands: Commands, offset: Res<CameraOffset>) {
 
     camera.transform.translation = Vec3::from(PLAYER_SPAWN) + **offset;
     camera.transform.look_at(PLAYER_SPAWN.into(), Vec3::Y);
+    camera.perspective_projection.fov = 0.5;
 
     commands.spawn_bundle(camera).insert(Name::new("Camera"));
 }
