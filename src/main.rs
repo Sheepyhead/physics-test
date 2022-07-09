@@ -22,7 +22,7 @@ use bevy::{
     prelude::{shape::Plane, *},
     window::PresentMode,
 };
-use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
+use bevy_inspector_egui::WorldInspectorParams;
 use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
 use camera::Camera;
@@ -64,7 +64,6 @@ fn main() {
             enabled: false,
             ..Default::default()
         })
-        .add_plugin(WorldInspectorPlugin::new())
         .add_plugin(TweeningPlugin)
         .add_plugin(Camera)
         .add_plugin(Animation)
@@ -96,6 +95,9 @@ fn slow_down() {
     std::thread::sleep(std::time::Duration::from_secs_f32(1.000));
 }
 
+#[derive(Component)]
+struct Ground;
+
 fn setup(
     mut commands: Commands,
     ass: Res<AssetServer>,
@@ -116,6 +118,7 @@ fn setup(
                         ..default()
                     },
                     Name::new("Ground"),
+                    Ground,
                 ))
                 .insert_bundle(PbrBundle {
                     mesh: meshes.add(Plane { size: 10.0 }.into()),
