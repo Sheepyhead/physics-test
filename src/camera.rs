@@ -1,5 +1,5 @@
 use bevy::{prelude::*, render::camera::Camera3d};
-use bevy_inspector_egui::{Inspectable, InspectorPlugin};
+use bevy_inspector_egui::Inspectable;
 use bevy_rapier3d::{
     math::Real,
     plugin::RapierContext,
@@ -18,8 +18,7 @@ pub struct CameraOffset(Vec3);
 
 impl Plugin for Camera {
     fn build(&self, app: &mut bevy::prelude::App) {
-        app.add_plugin(InspectorPlugin::<UnderCursor>::new())
-            .insert_resource(CameraOffset(Vec3::new(15.0, 15.0, 15.0)))
+        app.insert_resource(CameraOffset(Vec3::new(15.0, 15.0, 15.0)))
             .insert_resource(UnderCursor::default())
             .add_startup_system(spawn_camera)
             .add_system(follow_player)

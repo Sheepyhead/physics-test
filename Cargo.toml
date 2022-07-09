@@ -23,12 +23,12 @@ bevy = { version = "0.7", features = [
     "trace"
      ] }
 
-bevy_kira_audio = { version = "0.9", features = ["ogg", "wav"] }
+bevy_kira_audio = { version = "0.10.0", features = ["ogg", "wav"] }
 bevy-inspector-egui = "0.11.0"
 serde = "1.0"
 ron = "0.7"
 rand = "0.8"
-bevy_rapier3d = { version = "0.13.2", features = ["debug-render"] }
+bevy_rapier3d = { version = "0.14.1", features = ["debug-render"] }
 bevy_tweening = "0.4.0"
 
 # cargo run --release --features bevy/trace,bevy/trace_chrome
