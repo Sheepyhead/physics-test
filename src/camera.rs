@@ -34,6 +34,7 @@ fn spawn_camera(mut commands: Commands, offset: Res<CameraOffset>) {
     camera.perspective_projection.fov = 0.5;
 
     commands.spawn_bundle(camera).insert(Name::new("Camera"));
+    commands.spawn_bundle(UiCameraBundle::default());
 }
 
 fn follow_player(
@@ -60,7 +61,7 @@ fn update_under_cursor(
     windows: Res<Windows>,
     context: Res<RapierContext>,
     mut under_cursor: ResMut<UnderCursor>,
-    camera: Query<(&bevy::prelude::Camera, &GlobalTransform)>,
+    camera: Query<(&bevy::prelude::Camera, &GlobalTransform), With<Camera3d>>,
 ) {
     if let Some(cursor_pos_screen) = windows.get_primary().and_then(Window::cursor_position) {
         let (camera, camera_transform) = camera.single();

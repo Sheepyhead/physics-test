@@ -37,7 +37,11 @@ fn spawn_item(
                         linvel: [1.0, 10.0, 1.0].into(),
                         angvel: [3.0, 3.0, 3.0].into(),
                     },
+                    Item,
                 ));
         }
     }
 }
+
+#[derive(Component)]
+pub struct Item;

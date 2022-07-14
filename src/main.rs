@@ -31,6 +31,7 @@ use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
 use preload_assets::PreloadAssets;
 use rendering::Rendering;
+use ui_overlay::UiOverlay;
 
 mod animation;
 mod camera;
@@ -40,6 +41,7 @@ mod movement;
 mod physics;
 mod preload_assets;
 mod rendering;
+mod ui_overlay;
 pub mod util;
 
 pub const CLEAR: Color = Color::BLACK;
@@ -72,6 +74,7 @@ fn main() {
         .add_plugin(Physics)
         .add_plugin(PreloadAssets)
         .add_plugin(Rendering)
+        .add_plugin(UiOverlay)
         .add_startup_system(setup)
         .add_system(toggle_inspector);
 
