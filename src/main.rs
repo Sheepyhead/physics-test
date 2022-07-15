@@ -27,6 +27,7 @@ use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
 use camera::Camera;
 use controls::Controls;
+use items::Items;
 use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
 use preload_assets::PreloadAssets;
@@ -37,6 +38,7 @@ mod animation;
 mod camera;
 mod controls;
 mod debug;
+mod items;
 mod movement;
 mod physics;
 mod preload_assets;
@@ -70,6 +72,7 @@ fn main() {
         .add_plugin(Camera)
         .add_plugin(Animation)
         .add_plugin(Controls)
+        .add_plugin(Items)
         .add_plugin(Movement)
         .add_plugin(Physics)
         .add_plugin(PreloadAssets)

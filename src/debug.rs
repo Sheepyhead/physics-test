@@ -4,6 +4,8 @@ use bevy::{
 };
 use bevy_rapier3d::prelude::*;
 
+use crate::items::Item;
+
 pub struct Debug;
 
 impl Plugin for Debug {
@@ -42,6 +44,3 @@ fn spawn_item(
         }
     }
 }
-
-#[derive(Component)]
-pub struct Item;

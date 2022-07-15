@@ -1,19 +1,15 @@
 use bevy::{prelude::*, render::camera::Camera3d};
-use bevy_inspector_egui::{
-    widgets::InspectorQuerySingle, Inspectable, InspectorPlugin, WorldInspectorParams,
-    WorldInspectorPlugin,
-};
+use bevy_inspector_egui::{Inspectable, WorldInspectorPlugin};
 
-use crate::{debug::Item, util::screen_position_to_rect};
+use crate::{util::screen_position_to_rect, items::Item};
 
 pub struct UiOverlay;
 
 impl Plugin for UiOverlay {
     fn build(&self, app: &mut App) {
-        app
-        .add_plugin(WorldInspectorPlugin::new().filter::<With<ItemTitleLabelUI>>())
-        .add_system(spawn)
-        .add_system(refresh_position_on_item_move);
+        app.add_plugin(WorldInspectorPlugin::new().filter::<With<ItemTitleLabelUI>>())
+            .add_system(spawn)
+            .add_system(refresh_position_on_item_move);
     }
 }
 
