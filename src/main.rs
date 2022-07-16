@@ -22,11 +22,11 @@ use bevy::{
     prelude::{shape::Plane, *},
     window::PresentMode,
 };
-use bevy_inspector_egui::WorldInspectorParams;
 use bevy_rapier3d::prelude::*;
 use bevy_tweening::TweeningPlugin;
 use camera::Camera;
 use controls::Controls;
+use enemy::Enemies;
 use items::Items;
 use movement::{Grounded, Movement};
 use physics::{CollisionGroup, Physics};
@@ -38,6 +38,7 @@ mod animation;
 mod camera;
 mod controls;
 mod debug;
+mod enemy;
 mod items;
 mod movement;
 mod physics;
@@ -64,36 +65,23 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_system(exit_on_esc_system)
-        .insert_resource(WorldInspectorParams {
-            enabled: false,
-            ..Default::default()
-        })
         .add_plugin(TweeningPlugin)
         .add_plugin(Camera)
         .add_plugin(Animation)
         .add_plugin(Controls)
+        .add_plugin(Enemies)
         .add_plugin(Items)
         .add_plugin(Movement)
         .add_plugin(Physics)
         .add_plugin(PreloadAssets)
         .add_plugin(Rendering)
         .add_plugin(UiOverlay)
-        .add_startup_system(setup)
-        .add_system(toggle_inspector);
+        .add_startup_system(setup);
 
     #[cfg(debug_assertions)]
     app.add_plugin(debug::Debug);
 
     app.run();
-}
-
-fn toggle_inspector(
-    input: ResMut<Input<KeyCode>>,
-    mut window_params: ResMut<WorldInspectorParams>,
-) {
-    if input.just_pressed(KeyCode::Grave) {
-        window_params.enabled = !window_params.enabled;
-    }
 }
 
 #[allow(dead_code)]
@@ -112,6 +100,10 @@ fn setup(
 ) {
     commands.spawn_bundle(DirectionalLightBundle {
         transform: Transform::from_xyz(10.0, 10.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
+        directional_light: DirectionalLight {
+            illuminance: 10_000.0,
+            ..default()
+        },
         ..default()
     });
     for x in -10..10 {

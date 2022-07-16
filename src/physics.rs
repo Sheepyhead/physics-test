@@ -13,7 +13,9 @@ impl Plugin for Physics {
 }
 
 pub enum CollisionGroup {
-    Terrain = 0b0001,
+    Terrain = 1 << 0,
+    Item = 1 << 1,
+    Enemy = 1 << 2,
 }
 
 pub fn ray_from_screenspace(
