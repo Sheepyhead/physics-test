@@ -1,15 +1,8 @@
 use bevy::{prelude::*, render::camera::Camera3d};
 use bevy_inspector_egui::Inspectable;
-use bevy_rapier3d::{
-    math::Real,
-    plugin::RapierContext,
-    prelude::{InteractionGroups, RayIntersection},
-};
+use bevy_rapier3d::{math::Real, plugin::RapierContext, prelude::*};
 
-use crate::{
-    physics::{ray_from_screenspace, CollisionGroup},
-    Player, PLAYER_SPAWN,
-};
+use crate::{physics::ray_from_screenspace, Player, PLAYER_SPAWN};
 
 pub struct Camera;
 
@@ -73,8 +66,7 @@ fn update_under_cursor(
             to,
             Real::MAX,
             false,
-            InteractionGroups::all().with_filter(CollisionGroup::Terrain as u32),
-            None,
+            QueryFilter::default().groups(InteractionGroups::all()),
         ) {
             **under_cursor = Some(Collision {
                 hit,

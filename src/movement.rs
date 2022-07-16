@@ -61,8 +61,8 @@ fn snap_to_ground(
                 -Vec3::Y,
                 Real::MAX,
                 false,
-                InteractionGroups::all().with_filter(CollisionGroup::Terrain as u32),
-                None,
+                QueryFilter::default()
+                    .groups(InteractionGroups::all().with_filter(CollisionGroup::Terrain as u32)),
             ) {
                 mover_transform.translation.y = point.y + height_offset;
             }
